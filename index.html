@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>bylestherdev — Automatización con IA y desarrollo web</title>
-  <meta name="description" content="Automatizo los procesos de ventas, atención al cliente y operaciones de tu negocio usando IA y n8n. Para emprendedores digitales que quieren escalar sin contratar." />
+  <title>bylestherdev — Automatización de Operaciones y Desarrollo Web</title>
+  <meta name="description" content="Automatizo tus operaciones e integro IA para que tu negocio escale sin contratar más personal. Para emprendedores digitales hispanohablantes." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
@@ -12,21 +12,23 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #080809;
-      --surface:  #0f0f11;
-      --border:   #1a1a1f;
-      --text:     #e2e2e8;
-      --subtle:   #64647a;
-      --faint:    #2a2a35;
-      --accent:   #8b7cf6;
-      --accent-d: #6c5ce7;
-      --green:    #3ecf8e;
-      --sans:     'Inter', system-ui, sans-serif;
-      --serif:    'DM Serif Display', Georgia, serif;
+      --bg:        #0B0F19;
+      --surface:   #111827;
+      --surface2:  #1a2235;
+      --border:    #1e293b;
+      --text:      #e2e8f0;
+      --subtle:    #64748b;
+      --faint:     #1e3a5f;
+      --blue:      #2563EB;
+      --blue-hi:   #3b82f6;
+      --blue-lo:   rgba(37,99,235,0.12);
+      --green:     #10B981;
+      --green-lo:  rgba(16,185,129,0.1);
+      --sans:      'Inter', system-ui, sans-serif;
+      --serif:     'DM Serif Display', Georgia, serif;
     }
 
     html { scroll-behavior: smooth; }
-
     body {
       background: var(--bg);
       color: var(--text);
@@ -40,372 +42,320 @@
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 1.25rem 2.5rem;
-      background: rgba(8,8,9,0.9);
-      backdrop-filter: blur(16px);
+      padding: 1.1rem 2.5rem;
+      background: rgba(11,15,25,0.92);
+      backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
     }
     .nav-logo {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--text);
-      text-decoration: none;
-      letter-spacing: 0.01em;
+      font-size: 0.9rem; font-weight: 600;
+      color: var(--text); text-decoration: none; letter-spacing: 0.01em;
     }
-    .nav-logo span { color: var(--accent); }
+    .nav-logo span { color: var(--blue-hi); }
     .nav-right { display: flex; align-items: center; gap: 2.5rem; }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a {
-      color: var(--subtle);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 400;
-      transition: color 0.2s;
+      color: var(--subtle); text-decoration: none;
+      font-size: 0.85rem; font-weight: 400; transition: color 0.2s;
     }
     .nav-links a:hover { color: var(--text); }
     .nav-pill {
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: var(--bg);
-      background: var(--text);
-      padding: 0.45rem 1.1rem;
-      border-radius: 100px;
-      text-decoration: none;
-      transition: opacity 0.2s;
+      font-size: 0.82rem; font-weight: 600;
+      color: #fff; background: var(--blue);
+      padding: 0.48rem 1.2rem; border-radius: 6px;
+      text-decoration: none; transition: background 0.2s;
     }
-    .nav-pill:hover { opacity: 0.85; }
+    .nav-pill:hover { background: var(--blue-hi); }
+
+    /* ─── FLOATING CTA ─── */
+    .float-cta {
+      position: fixed; bottom: 1.75rem; right: 1.75rem; z-index: 200;
+      display: flex; align-items: center; gap: 0.6rem;
+      background: var(--blue); color: #fff;
+      font-size: 0.85rem; font-weight: 600;
+      padding: 0.75rem 1.4rem; border-radius: 100px;
+      text-decoration: none; box-shadow: 0 8px 32px rgba(37,99,235,0.4);
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+    .float-cta:hover {
+      background: var(--blue-hi); transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(37,99,235,0.5);
+    }
+    .float-cta::before {
+      content: ''; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green); animation: blink 2s infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity:1; } 50% { opacity:0.4; }
+    }
 
     /* ─── HERO ─── */
     #hero {
       min-height: 100vh;
       display: flex; flex-direction: column; justify-content: center;
-      padding: 7rem 2.5rem 5rem;
-      max-width: 860px;
-      margin: 0 auto;
+      padding: 8rem 2.5rem 5rem;
+      max-width: 860px; margin: 0 auto;
     }
     .hero-tag {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--subtle);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 2.5rem;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-size: 0.72rem; font-weight: 600; color: var(--green);
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2rem;
+      background: var(--green-lo); padding: 0.35rem 0.9rem;
+      border-radius: 100px; width: fit-content;
+      border: 1px solid rgba(16,185,129,0.25);
     }
     .hero-tag::before {
-      content: '';
-      display: inline-block;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--green);
+      content: ''; display: inline-block; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--green);
     }
     h1 {
       font-family: var(--serif);
-      font-size: clamp(3rem, 7vw, 5.5rem);
-      font-weight: 400;
-      line-height: 1.05;
-      letter-spacing: -0.01em;
-      color: #fff;
-      margin-bottom: 2rem;
+      font-size: clamp(2.8rem, 6.5vw, 5rem);
+      font-weight: 400; line-height: 1.06; letter-spacing: -0.01em;
+      color: #fff; margin-bottom: 1.75rem;
     }
-    h1 em {
-      font-style: italic;
-      color: var(--accent);
-    }
+    h1 em { font-style: italic; color: var(--blue-hi); }
     .hero-body {
-      font-size: 1.1rem;
-      color: var(--subtle);
-      line-height: 1.75;
-      max-width: 520px;
-      margin-bottom: 3rem;
-      font-weight: 300;
+      font-size: 1.05rem; color: var(--subtle); line-height: 1.8;
+      max-width: 500px; margin-bottom: 2.5rem; font-weight: 300;
     }
-    .hero-actions { display: flex; align-items: center; gap: 1.5rem; }
+    .hero-actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
     .btn-main {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #fff;
-      background: var(--accent-d);
-      padding: 0.75rem 1.75rem;
-      border-radius: 8px;
-      text-decoration: none;
+      font-size: 0.9rem; font-weight: 600; color: #fff;
+      background: var(--blue); padding: 0.8rem 1.8rem;
+      border-radius: 8px; text-decoration: none;
       transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.3);
     }
-    .btn-main:hover { background: var(--accent); transform: translateY(-1px); }
+    .btn-main:hover { background: var(--blue-hi); transform: translateY(-1px); }
     .btn-ghost {
-      font-size: 0.85rem;
-      color: var(--subtle);
-      text-decoration: none;
-      transition: color 0.2s;
+      font-size: 0.85rem; color: var(--subtle); text-decoration: none;
+      transition: color 0.2s; font-weight: 400;
     }
     .btn-ghost:hover { color: var(--text); }
 
-    /* ─── DIVIDER ─── */
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 0;
-    }
-
-    /* ─── MARQUEE ─── */
-    .marquee-wrap {
-      overflow: hidden;
-      padding: 1.5rem 0;
+    /* ─── MARQUEE (Stack de Confianza) ─── */
+    .marquee-section {
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      padding: 0;
     }
+    .marquee-label {
+      text-align: center;
+      font-size: 0.68rem; font-weight: 600; color: var(--subtle);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      padding: 1rem 0 0.75rem;
+    }
+    .marquee-wrap { overflow: hidden; padding: 0.9rem 0 1.1rem; }
     .marquee-track {
-      display: flex; gap: 3rem;
-      animation: marquee 22s linear infinite;
+      display: flex; gap: 2.5rem;
+      animation: marquee 28s linear infinite;
       width: max-content;
     }
+    .marquee-track:hover { animation-play-state: paused; }
     .marquee-item {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--faint);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      white-space: nowrap;
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.78rem; font-weight: 500; color: var(--subtle);
+      white-space: nowrap; letter-spacing: 0.03em;
+      padding: 0.3rem 0.75rem;
+      border: 1px solid var(--border); border-radius: 100px;
+      background: var(--bg);
+      transition: border-color 0.2s, color 0.2s;
     }
-    .marquee-item.lit { color: var(--subtle); }
+    .marquee-item:hover { border-color: var(--blue); color: var(--text); }
+    .marquee-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--blue); opacity: 0.6; }
     @keyframes marquee {
       from { transform: translateX(0); }
       to   { transform: translateX(-50%); }
     }
 
     /* ─── SECTIONS ─── */
-    .section {
-      padding: 7rem 2.5rem;
-      max-width: 860px;
-      margin: 0 auto;
-    }
+    .section { padding: 6rem 2.5rem; max-width: 860px; margin: 0 auto; }
     .section-label {
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--subtle);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 3.5rem;
-    }
-
-    /* ─── SERVICES ─── */
-    .services-list { display: flex; flex-direction: column; }
-    .service-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: start;
-      gap: 2rem;
-      padding: 2.5rem 0;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.15s;
-    }
-    .service-row:first-child { border-top: 1px solid var(--border); }
-    .service-row:hover .service-name { color: #fff; }
-    .service-name {
-      font-family: var(--serif);
-      font-size: 1.65rem;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-      transition: color 0.2s;
-      letter-spacing: -0.01em;
-    }
-    .service-desc {
-      font-size: 0.875rem;
-      color: var(--subtle);
-      line-height: 1.65;
-      max-width: 440px;
-      font-weight: 300;
-    }
-    .service-meta { text-align: right; padding-top: 0.3rem; }
-    .service-price {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--text);
-      white-space: nowrap;
-    }
-    .service-days {
-      font-size: 0.75rem;
-      color: var(--subtle);
-      margin-top: 0.2rem;
-    }
-
-    /* ─── PROCESS ─── */
-    #process { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    #process .section { max-width: 860px; }
-    .process-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .process-cell {
-      background: var(--surface);
-      padding: 2rem 2rem 2.5rem;
-    }
-    .process-n {
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--faint);
-      letter-spacing: 0.08em;
-      margin-bottom: 1.25rem;
-    }
-    .process-cell h4 {
-      font-size: 1rem;
-      font-weight: 500;
-      color: #fff;
-      margin-bottom: 0.4rem;
-    }
-    .process-cell p {
-      font-size: 0.845rem;
-      color: var(--subtle);
-      line-height: 1.65;
-      font-weight: 300;
+      font-size: 0.7rem; font-weight: 700; color: var(--blue-hi);
+      text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 3rem;
     }
 
     /* ─── NUMBERS ─── */
     .numbers-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
+      display: grid; grid-template-columns: repeat(4,1fr);
+      border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
     }
     .number-cell {
       padding: 2rem 1.5rem;
       border-right: 1px solid var(--border);
+      background: var(--surface);
     }
     .number-cell:last-child { border-right: none; }
     .number-val {
-      font-family: var(--serif);
-      font-size: 2.2rem;
-      color: #fff;
-      line-height: 1;
-      margin-bottom: 0.5rem;
+      font-family: var(--serif); font-size: 2.2rem;
+      color: #fff; line-height: 1; margin-bottom: 0.4rem;
     }
-    .number-val span { color: var(--accent); }
-    .number-label {
-      font-size: 0.78rem;
-      color: var(--subtle);
-      font-weight: 300;
-      line-height: 1.4;
-    }
+    .number-val span { color: var(--green); }
+    .number-label { font-size: 0.76rem; color: var(--subtle); font-weight: 300; line-height: 1.4; }
 
-    /* ─── STACK ─── */
-    .stack-wrap {
-      display: flex; flex-wrap: wrap; gap: 0.5rem;
-      margin-top: 2.5rem;
+    /* ─── PAIN / CALCULATOR ─── */
+    #pain { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .pain-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
     }
-    .stack-chip {
-      font-size: 0.78rem;
-      color: var(--subtle);
-      border: 1px solid var(--border);
-      padding: 0.3rem 0.75rem;
-      border-radius: 100px;
-      transition: border-color 0.2s, color 0.2s;
-      font-weight: 400;
+    .pain-title {
+      font-family: var(--serif); font-size: 2rem; font-weight: 400;
+      color: #fff; line-height: 1.2; margin-bottom: 1rem; letter-spacing: -0.01em;
     }
-    .stack-chip:hover { border-color: var(--faint); color: var(--text); }
+    .pain-title em { font-style: italic; color: var(--blue-hi); }
+    .pain-sub { font-size: 0.9rem; color: var(--subtle); line-height: 1.7; font-weight: 300; }
+    .pain-checks { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+    .pain-check {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      font-size: 0.875rem; color: var(--subtle); line-height: 1.5;
+    }
+    .pain-check .ck {
+      flex-shrink: 0; width: 18px; height: 18px; border-radius: 4px;
+      border: 1px solid var(--border); background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; color: var(--green); margin-top: 1px;
+      cursor: pointer; transition: background 0.2s, border-color 0.2s;
+    }
+    .pain-check .ck.checked { background: var(--green-lo); border-color: var(--green); }
+    .pain-check .ck.checked::after { content: '✓'; }
+
+    /* Calculator panel */
+    .calc-panel {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.75rem;
+    }
+    .calc-panel h4 {
+      font-size: 0.8rem; font-weight: 600; color: var(--subtle);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.5rem;
+    }
+    .calc-row { margin-bottom: 1.25rem; }
+    .calc-row label {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.82rem; color: var(--subtle); margin-bottom: 0.4rem;
+    }
+    .calc-row label span { color: var(--text); font-weight: 500; }
+    input[type=range] {
+      width: 100%; height: 4px; border-radius: 2px;
+      -webkit-appearance: none; appearance: none;
+      background: var(--border); cursor: pointer; outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 16px; height: 16px;
+      border-radius: 50%; background: var(--blue); cursor: pointer;
+    }
+    .calc-result {
+      margin-top: 1.5rem; padding: 1.1rem;
+      background: var(--blue-lo); border: 1px solid rgba(37,99,235,0.3);
+      border-radius: 8px;
+    }
+    .calc-result-label { font-size: 0.75rem; color: var(--subtle); margin-bottom: 0.35rem; }
+    .calc-result-val {
+      font-family: var(--serif); font-size: 1.8rem; color: var(--green); line-height: 1;
+    }
+    .calc-result-sub { font-size: 0.72rem; color: var(--subtle); margin-top: 0.3rem; }
+
+    /* ─── SERVICES ─── */
+    .services-list { display: flex; flex-direction: column; }
+    .service-row {
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: start; gap: 2rem;
+      padding: 2.25rem 0; border-bottom: 1px solid var(--border);
+    }
+    .service-row:first-child { border-top: 1px solid var(--border); }
+    .service-row:hover .service-name { color: #fff; }
+    .service-cat {
+      font-size: 0.68rem; font-weight: 600; color: var(--blue-hi);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem;
+    }
+    .service-name {
+      font-family: var(--serif); font-size: 1.5rem; font-weight: 400;
+      color: var(--text); margin-bottom: 0.4rem;
+      transition: color 0.2s; letter-spacing: -0.01em;
+    }
+    .service-desc { font-size: 0.85rem; color: var(--subtle); line-height: 1.65; max-width: 430px; font-weight: 300; }
+    .service-meta { text-align: right; padding-top: 0.25rem; }
+    .service-price { font-size: 0.9rem; font-weight: 600; color: var(--text); white-space: nowrap; }
+    .service-days { font-size: 0.72rem; color: var(--subtle); margin-top: 0.2rem; }
+
+    /* ─── PROCESS ─── */
+    #process { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .process-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: var(--border); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .process-cell { background: var(--surface); padding: 2rem 2rem 2.25rem; }
+    .process-n {
+      font-size: 0.68rem; font-weight: 700; color: var(--blue);
+      letter-spacing: 0.08em; margin-bottom: 1rem;
+    }
+    .process-cell h4 { font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 0.35rem; }
+    .process-cell p { font-size: 0.835rem; color: var(--subtle); line-height: 1.65; font-weight: 300; }
 
     /* ─── PRICING ─── */
     #pricing { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .pricing-table { width: 100%; border-collapse: collapse; margin-top: 2.5rem; }
+    .pricing-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
     .pricing-table tr { border-bottom: 1px solid var(--border); }
     .pricing-table tr:last-child { border-bottom: none; }
-    .pricing-table tr:hover td { color: var(--text); }
-    .pricing-table td {
-      padding: 1.4rem 0;
-      font-size: 0.9rem;
-      color: var(--subtle);
-      transition: color 0.2s;
-      font-weight: 300;
-    }
-    .pricing-table td:first-child {
-      font-family: var(--serif);
-      font-size: 1.2rem;
-      color: var(--text);
-      font-weight: 400;
-      width: 45%;
-    }
     .pricing-table tr:hover td:first-child { color: #fff; }
-    .pricing-table td:last-child { text-align: right; font-weight: 500; color: var(--text); }
-    .pricing-note {
-      margin-top: 2rem;
-      font-size: 0.8rem;
-      color: var(--subtle);
-      font-weight: 300;
-    }
+    .pricing-table td { padding: 1.3rem 0; font-size: 0.875rem; color: var(--subtle); font-weight: 300; transition: color 0.15s; }
+    .pricing-table td:first-child { font-family: var(--serif); font-size: 1.15rem; color: var(--text); width: 40%; font-weight: 400; }
+    .pricing-table td:last-child { text-align: right; font-weight: 600; color: var(--text); }
+    .pricing-note { margin-top: 1.75rem; font-size: 0.78rem; color: var(--subtle); font-weight: 300; }
 
     /* ─── CTA ─── */
     #cta { text-align: center; }
     #cta h2 {
-      font-family: var(--serif);
-      font-size: clamp(2.2rem, 5vw, 4rem);
-      font-weight: 400;
-      color: #fff;
-      line-height: 1.1;
-      margin-bottom: 1.25rem;
+      font-family: var(--serif); font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 400; color: #fff; line-height: 1.1; margin-bottom: 1.1rem;
     }
-    #cta h2 em { font-style: italic; color: var(--accent); }
-    #cta p {
-      font-size: 1rem;
-      color: var(--subtle);
-      margin-bottom: 2.5rem;
-      font-weight: 300;
-      max-width: 420px;
-      margin-left: auto; margin-right: auto;
-    }
+    #cta h2 em { font-style: italic; color: var(--blue-hi); }
+    #cta p { font-size: 1rem; color: var(--subtle); margin-bottom: 2.25rem; font-weight: 300; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.7; }
     .cta-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
     .btn-outline {
-      font-size: 0.88rem;
-      font-weight: 400;
-      color: var(--subtle);
-      border: 1px solid var(--border);
-      padding: 0.72rem 1.5rem;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: border-color 0.2s, color 0.2s;
+      font-size: 0.875rem; font-weight: 500; color: var(--subtle);
+      border: 1px solid var(--border); padding: 0.75rem 1.5rem;
+      border-radius: 8px; text-decoration: none; transition: border-color 0.2s, color 0.2s;
     }
-    .btn-outline:hover { border-color: var(--faint); color: var(--text); }
+    .btn-outline:hover { border-color: var(--blue); color: var(--text); }
+    .cta-trust {
+      margin-top: 2rem; display: flex; align-items: center; justify-content: center;
+      gap: 1.5rem; flex-wrap: wrap;
+    }
+    .cta-trust-item {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.75rem; color: var(--subtle); font-weight: 300;
+    }
+    .cta-trust-item::before { content: '✓'; color: var(--green); font-weight: 700; font-size: 0.7rem; }
 
     /* ─── FOOTER ─── */
     footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 2.5rem;
+      border-top: 1px solid var(--border); padding: 2rem 2.5rem;
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 1rem;
-      max-width: 100%;
     }
-    .footer-l { font-size: 0.82rem; color: var(--subtle); font-weight: 300; }
+    .footer-l { font-size: 0.8rem; color: var(--subtle); font-weight: 300; }
     .footer-links { display: flex; gap: 2rem; }
-    .footer-links a {
-      font-size: 0.82rem;
-      color: var(--subtle);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
+    .footer-links a { font-size: 0.8rem; color: var(--subtle); text-decoration: none; transition: color 0.2s; }
     .footer-links a:hover { color: var(--text); }
 
     /* ─── MOBILE ─── */
     @media (max-width: 680px) {
       nav { padding: 1rem 1.25rem; }
       .nav-links { display: none; }
-      .section { padding: 5rem 1.25rem; }
+      .section { padding: 4rem 1.25rem; }
       #hero { padding: 6rem 1.25rem 4rem; }
-      h1 { font-size: 2.8rem; }
-      .process-grid { grid-template-columns: 1fr; }
-      .numbers-grid { grid-template-columns: 1fr 1fr; }
-      .number-cell:nth-child(2) { border-right: none; }
-      .number-cell:nth-child(3) { border-top: 1px solid var(--border); }
-      .service-row { grid-template-columns: 1fr; gap: 0.75rem; }
+      h1 { font-size: 2.6rem; }
+      .process-grid, .pain-grid, .numbers-grid { grid-template-columns: 1fr; }
+      .number-cell { border-right: none; border-bottom: 1px solid var(--border); }
+      .number-cell:last-child { border-bottom: none; }
+      .service-row { grid-template-columns: 1fr; gap: 0.6rem; }
       .service-meta { text-align: left; }
+      .float-cta { bottom: 1rem; right: 1rem; font-size: 0.8rem; padding: 0.65rem 1.1rem; }
       footer { padding: 1.5rem 1.25rem; }
     }
-
     @media (prefers-reduced-motion: reduce) {
       *, .marquee-track { animation: none !important; transition: none !important; }
     }
@@ -415,72 +365,69 @@
 
 <!-- NAV -->
 <nav>
-  <a class="nav-logo" href="#">bylesther<span>dev</span></a>
+  <a class="nav-logo" href="#">bylether<span>dev</span></a>
   <div class="nav-right">
     <ul class="nav-links">
       <li><a href="#services">Servicios</a></li>
-      <li><a href="#process">Proceso</a></li>
+      <li><a href="#pain">¿Te identificas?</a></li>
       <li><a href="#pricing">Precios</a></li>
     </ul>
-    <a href="#cta" class="nav-pill">Hablar →</a>
+    <a href="https://calendly.com/jordi-lf-cb" target="_blank" class="nav-pill">Agendar consultoría →</a>
   </div>
 </nav>
+
+<!-- FLOATING CTA -->
+<a href="https://calendly.com/jordi-lf-cb" target="_blank" class="float-cta">Optimizar mi negocio</a>
 
 <!-- HERO -->
 <section id="hero">
   <p class="hero-tag">Disponible para nuevos proyectos</p>
-  <h1>Tu negocio,<br/><em>automatizado.</em></h1>
-  <p class="hero-body">Construyo sistemas con n8n e IA que capturan leads, responden consultas, generan cotizaciones y hacen seguimiento — solos. Para emprendedores que quieren escalar sin contratar.</p>
+  <h1>Automatizo tus operaciones<br/>y diseño tus<br/><em>plataformas para escalar.</em></h1>
+  <p class="hero-body">Construyo sistemas con IA que eliminan el trabajo manual, integro tus herramientas y desarrollo las plataformas digitales que tu negocio necesita para crecer sin contratar más.</p>
   <div class="hero-actions">
-    <a href="#cta" class="btn-main">Empezar proyecto →</a>
+    <a href="https://calendly.com/jordi-lf-cb" target="_blank" class="btn-main">Agendar Consultoría de Eficiencia →</a>
     <a href="#services" class="btn-ghost">Ver servicios</a>
   </div>
 </section>
 
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <span class="marquee-item lit">n8n</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">WhatsApp Business API</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">Gemini 1.5 Flash</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">Instagram DM</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">Google Workspace</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">Stripe</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">MercadoPago</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">Railway.app</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">n8n</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">WhatsApp Business API</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">Gemini 1.5 Flash</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">Instagram DM</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">Google Workspace</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">Stripe</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">MercadoPago</span>
-    <span class="marquee-item">·</span>
-    <span class="marquee-item lit">Railway.app</span>
-    <span class="marquee-item">·</span>
+<!-- MARQUEE — Stack de Confianza -->
+<div class="marquee-section">
+  <p class="marquee-label">Tecnologías de Infraestructura Segura</p>
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item"><span class="marquee-dot"></span>n8n</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>WhatsApp Business API</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Gemini 1.5 Flash</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Instagram DM API</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Google Workspace</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Node.js</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>React</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Stripe</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>MercadoPago</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Docker</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Railway.app</span>
+      <!-- duplicado para loop continuo -->
+      <span class="marquee-item"><span class="marquee-dot"></span>n8n</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>WhatsApp Business API</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Gemini 1.5 Flash</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Instagram DM API</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Google Workspace</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Node.js</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>React</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Stripe</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>MercadoPago</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Docker</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Railway.app</span>
+    </div>
   </div>
 </div>
 
 <!-- NUMBERS -->
-<div class="section" style="padding-top: 5rem; padding-bottom: 5rem;">
+<div class="section" style="padding-top:5rem;padding-bottom:5rem;">
   <div class="numbers-grid">
     <div class="number-cell">
       <div class="number-val">&lt;<span>2</span>min</div>
-      <div class="number-label">Respuesta al primer mensaje</div>
+      <div class="number-label">Respuesta automática al primer lead</div>
     </div>
     <div class="number-cell">
       <div class="number-val"><span>$5</span></div>
@@ -488,24 +435,80 @@
     </div>
     <div class="number-cell">
       <div class="number-val">24<span>/</span>7</div>
-      <div class="number-label">Tu negocio disponible</div>
+      <div class="number-label">Tu negocio disponible sin intervención</div>
     </div>
     <div class="number-cell">
       <div class="number-val">50<span>%</span></div>
-      <div class="number-label">Anticipo al iniciar, resto al entregar</div>
+      <div class="number-label">Anticipo al iniciar · resto al entregar</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAIN / CALCULADORA -->
+<div id="pain">
+  <div class="section">
+    <p class="section-label">¿Te identificas?</p>
+    <div class="pain-grid">
+      <div>
+        <div class="pain-title">¿Tu equipo pierde horas<br/><em>en tareas que no escalan?</em></div>
+        <p class="pain-sub">Marca las situaciones que vives en tu negocio hoy:</p>
+        <div class="pain-checks">
+          <div class="pain-check">
+            <div class="ck" onclick="toggleCheck(this)"></div>
+            <span>Copiamos datos manualmente entre apps (CRM, sheets, WhatsApp)</span>
+          </div>
+          <div class="pain-check">
+            <div class="ck" onclick="toggleCheck(this)"></div>
+            <span>Respondemos las mismas preguntas de clientes todos los días</span>
+          </div>
+          <div class="pain-check">
+            <div class="ck" onclick="toggleCheck(this)"></div>
+            <span>Los leads se pierden porque no alcanzamos a responder a tiempo</span>
+          </div>
+          <div class="pain-check">
+            <div class="ck" onclick="toggleCheck(this)"></div>
+            <span>Hacemos seguimiento manual por WhatsApp sin un sistema claro</span>
+          </div>
+          <div class="pain-check">
+            <div class="ck" onclick="toggleCheck(this)"></div>
+            <span>El equipo gasta más de 10 horas/semana en tareas repetitivas</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-panel">
+        <h4>Calculadora de tiempo perdido</h4>
+        <div class="calc-row">
+          <label>Horas perdidas por semana <span id="hrs-val">10 hrs</span></label>
+          <input type="range" min="2" max="40" value="10" step="1" oninput="calcUpdate()" id="hrs-range"/>
+        </div>
+        <div class="calc-row">
+          <label>Costo hora de tu equipo <span id="cost-val">$15 USD</span></label>
+          <input type="range" min="5" max="80" value="15" step="5" oninput="calcUpdate()" id="cost-range"/>
+        </div>
+        <div class="calc-result">
+          <div class="calc-result-label">Pierdes aproximadamente</div>
+          <div class="calc-result-val" id="calc-out">$600 USD/mes</div>
+          <div class="calc-result-sub">en tiempo no recuperable. Un sistema automatizado lo elimina.</div>
+        </div>
+        <a href="https://calendly.com/jordi-lf-cb" target="_blank" class="btn-main" style="display:block;text-align:center;margin-top:1.25rem;font-size:0.85rem;padding:0.7rem 1rem;">
+          Quiero recuperar ese tiempo →
+        </a>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- SERVICES -->
 <section id="services">
-  <div class="section" style="padding-top: 0;">
+  <div class="section">
     <p class="section-label">Servicios</p>
     <div class="services-list">
       <div class="service-row">
         <div>
-          <div class="service-name">Automatización con n8n</div>
-          <div class="service-desc">Flujos completos que capturan leads desde WhatsApp, Instagram o web, los califican con IA, cotizan y hacen seguimiento hasta el cierre. Todo sin intervención manual.</div>
+          <div class="service-cat">Eficiencia operativa</div>
+          <div class="service-name">Automatización de Procesos e Integración de IA</div>
+          <div class="service-desc">Flujos completos que capturan leads, los califican, generan cotizaciones y hacen seguimiento automático. Tus herramientas conectadas y trabajando solas.</div>
         </div>
         <div class="service-meta">
           <div class="service-price">desde $400 USD</div>
@@ -514,8 +517,9 @@
       </div>
       <div class="service-row">
         <div>
-          <div class="service-name">Chatbots con IA</div>
-          <div class="service-desc">Agentes conversacionales para WhatsApp Business e Instagram DM. Memoria de contexto, clasificación de intenciones y escalada inteligente cuando necesitan hablar contigo.</div>
+          <div class="service-cat">Atención al cliente</div>
+          <div class="service-name">Agentes Conversacionales con IA</div>
+          <div class="service-desc">Sistemas de atención inteligente para WhatsApp Business e Instagram DM. Responden, clasifican y escalan sin intervención humana las 24 horas.</div>
         </div>
         <div class="service-meta">
           <div class="service-price">desde $400 USD</div>
@@ -524,7 +528,8 @@
       </div>
       <div class="service-row">
         <div>
-          <div class="service-name">Páginas web</div>
+          <div class="service-cat">Presencia digital</div>
+          <div class="service-name">Desarrollo Web Profesional</div>
           <div class="service-desc">Landing pages, sitios corporativos y tiendas online diseñadas para convertir. Con integración opcional a tu sistema de automatización desde el primer día.</div>
         </div>
         <div class="service-meta">
@@ -534,8 +539,9 @@
       </div>
       <div class="service-row">
         <div>
-          <div class="service-name">Agentes IA personalizados</div>
-          <div class="service-desc">Sistemas de IA a medida con base de conocimiento propia, herramientas conectadas y lógica de decisión compleja. Para casos de uso que van más allá del chatbot estándar.</div>
+          <div class="service-cat">Inteligencia artificial</div>
+          <div class="service-name">Agentes IA a Medida</div>
+          <div class="service-desc">Sistemas con base de conocimiento propia, herramientas conectadas y lógica de decisión compleja. Para casos de uso que van más allá del chatbot estándar.</div>
         </div>
         <div class="service-meta">
           <div class="service-price">desde $800 USD</div>
@@ -544,8 +550,9 @@
       </div>
       <div class="service-row">
         <div>
-          <div class="service-name">Mantención mensual</div>
-          <div class="service-desc">Soporte, monitoreo y actualizaciones de los sistemas entregados. Para que todo siga funcionando sin que tengas que preocuparte.</div>
+          <div class="service-cat">Continuidad</div>
+          <div class="service-name">Soporte y Mantención Mensual</div>
+          <div class="service-desc">Monitoreo, actualizaciones y soporte de los sistemas entregados. Para que todo siga funcionando mientras tú te enfocas en crecer.</div>
         </div>
         <div class="service-meta">
           <div class="service-price">desde $80 USD/mes</div>
@@ -563,23 +570,23 @@
     <div class="process-grid">
       <div class="process-cell">
         <div class="process-n">01</div>
-        <h4>Conversación inicial</h4>
-        <p>Me cuentas qué proceso quieres automatizar. Sin formularios, por WhatsApp o email. Directo.</p>
+        <h4>Consultoría inicial</h4>
+        <p>Agendas una llamada de 30 min. Mapeamos tus procesos y identificamos dónde estás perdiendo más tiempo y dinero.</p>
       </div>
       <div class="process-cell">
         <div class="process-n">02</div>
         <h4>Propuesta en PDF</h4>
-        <p>Recibes una cotización con alcance, precio y plazo. Válida 7 días. Sin costo por propuesta.</p>
+        <p>Recibes una cotización con alcance, precio exacto y plazo. Válida 7 días. Sin costo por propuesta.</p>
       </div>
       <div class="process-cell">
         <div class="process-n">03</div>
         <h4>Anticipo y kickoff</h4>
-        <p>Al confirmar, pagas el 50% de anticipo y agendamos una llamada de 30 min para alinear todo.</p>
+        <p>Al confirmar, pagas el 50% de anticipo y agendamos el kickoff para alinear entregables y accesos.</p>
       </div>
       <div class="process-cell">
         <div class="process-n">04</div>
-        <h4>Entrega</h4>
-        <p>Construyo, pruebo y entrego con 2 rondas de revisión incluidas. El 50% restante al recibir.</p>
+        <h4>Entrega y soporte</h4>
+        <p>Construyo, pruebo y entrego con 2 rondas de revisión incluidas. El 50% restante al recibir conforme.</p>
       </div>
     </div>
   </div>
@@ -591,43 +598,49 @@
     <p class="section-label">Precios</p>
     <table class="pricing-table">
       <tr>
-        <td>Automatización n8n</td>
-        <td>Flujo completo de ventas</td>
+        <td>Automatización de Procesos</td>
+        <td>Flujo completo con IA integrada</td>
         <td>$400 – $1,500</td>
       </tr>
       <tr>
-        <td>Chatbot con IA</td>
-        <td>WhatsApp o Instagram</td>
+        <td>Agentes Conversacionales</td>
+        <td>WhatsApp o Instagram DM</td>
         <td>$400 – $1,000</td>
       </tr>
       <tr>
-        <td>Página web</td>
+        <td>Desarrollo Web</td>
         <td>Landing, corporativa, tienda</td>
         <td>$300 – $1,000</td>
       </tr>
       <tr>
-        <td>Agente IA</td>
-        <td>Sistema a medida</td>
+        <td>Agente IA a Medida</td>
+        <td>Sistema a medida con memoria</td>
         <td>$800 – $2,500</td>
       </tr>
       <tr>
-        <td>Mantención</td>
-        <td>Soporte mensual recurrente</td>
+        <td>Mantención Mensual</td>
+        <td>Soporte y monitoreo recurrente</td>
         <td>$80 – $250/mes</td>
       </tr>
     </table>
-    <p class="pricing-note">Todos los proyectos: 50% anticipo al iniciar · 50% al entregar. Precio mínimo por proyecto: $200 USD.</p>
+    <p class="pricing-note">50% anticipo al iniciar · 50% al entregar. Precio mínimo por proyecto: $200 USD.</p>
   </div>
 </div>
 
-<!-- CTA -->
+<!-- CTA FINAL -->
 <section id="cta">
   <div class="section">
-    <h2>¿Listo para salir<br/>del <em>modo manual?</em></h2>
-    <p>Cuéntame qué proceso quieres eliminar. Te respondo con una propuesta en menos de 24 horas.</p>
+    <h2>¿Listo para escalar<br/>tu negocio <em>de verdad?</em></h2>
+    <p>Agenda una consultoría de eficiencia gratuita de 30 minutos. Sin compromiso, con un diagnóstico real de tus procesos.</p>
     <div class="cta-row">
-      <a href="https://wa.me/56946976778" class="btn-main" target="_blank">Escribirme por WhatsApp →</a>
-      <a href="mailto:jordi.lf.cb@gmail.com" class="btn-outline">Enviar email</a>
+      <a href="https://calendly.com/jordi-lf-cb" target="_blank" class="btn-main">Agendar Consultoría de Eficiencia →</a>
+      <a href="https://wa.me/56928599037?text=Hola%2C%20inicia%20la%20conversaci%C3%B3n%20mencionando%20en%20qu%C3%A9%20puedes%20ayudarme" target="_blank" class="btn-outline">Escribir por WhatsApp</a>
+    </div>
+    <div class="cta-trust">
+      <span class="cta-trust-item">Respuesta en menos de 24h</span>
+      <span class="cta-trust-item">Sin contratos de permanencia</span>
+      <span class="cta-trust-item">50% anticipo · 50% al entregar</span>
+      <span class="cta-trust-item">2 revisiones incluidas</span>
     </div>
   </div>
 </section>
@@ -642,5 +655,19 @@
   </div>
 </footer>
 
+<script>
+  function calcUpdate() {
+    const hrs = +document.getElementById('hrs-range').value;
+    const cost = +document.getElementById('cost-range').value;
+    document.getElementById('hrs-val').textContent = hrs + ' hrs';
+    document.getElementById('cost-val').textContent = '$' + cost + ' USD';
+    const monthly = hrs * cost * 4;
+    document.getElementById('calc-out').textContent =
+      '$' + monthly.toLocaleString() + ' USD/mes';
+  }
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+  }
+</script>
 </body>
 </html>
