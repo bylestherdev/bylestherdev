@@ -1,312 +1,212 @@
 /**
  * bylestherdev — main.js
- * Requiere jQuery 3.x
+ * jQuery 3.x requerido
  *
- * Módulos:
- *  1. Calculator       — calculadora interactiva con pesos por opción
- *  2. LeadCapture      — registra selecciones del visitante en sessionStorage
- *  3. Animations       — observers para entradas suaves al hacer scroll
- *  4. FloatCTA         — muestra/oculta el botón flotante según scroll
- *  5. NavScroll        — marca el link activo en la nav según sección visible
- *  6. Utils            — helpers compartidos
+ * Módulos activos:
+ *  1. Utils        — throttle (usado por FloatCTA)
+ *  2. Calculator   — calculadora con checkboxes + sliders
+ *  3. FloatCTA     — botón flotante aparece/desaparece con scroll
+ *  4. LeadCapture  — guarda interacciones en sessionStorage
  */
 
 (function ($) {
   'use strict';
 
-  /* ─────────────────────────────────────────────
-   * CONFIGURACIÓN GLOBAL
-   * ───────────────────────────────────────────── */
-  const CONFIG = {
-    // Cada opción del checklist suma horas y costo/hora al estimado
+  /* ─── CONFIGURACIÓN ─── */
+  var CONFIG = {
+    weeksPerMonth : 4.3,
+    storageKey    : 'bld_lead_data',
+    // Cada opción suma horas semanales al total
     painOptions: [
-      { id: 0, label: 'Copiar datos entre apps',         hoursPerWeek: 5,  costPerHour: 15 },
-      { id: 1, label: 'Responder preguntas repetitivas', hoursPerWeek: 4,  costPerHour: 12 },
-      { id: 2, label: 'Leads sin responder a tiempo',    hoursPerWeek: 3,  costPerHour: 20 },
-      { id: 3, label: 'Seguimiento manual por WhatsApp', hoursPerWeek: 4,  costPerHour: 12 },
-      { id: 4, label: '+10 horas/semana en tareas rep.',  hoursPerWeek: 10, costPerHour: 15 },
-    ],
-    weeksPerMonth: 4.3,
-    animationClass: 'bld-visible',
-    storageKey: 'bld_lead_data',
+      { label: 'Copiar datos entre apps',         hours: 5  },
+      { label: 'Responder preguntas repetitivas', hours: 4  },
+      { label: 'Leads sin responder a tiempo',    hours: 3  },
+      { label: 'Seguimiento manual por WhatsApp', hours: 4  },
+      { label: '+10 hrs/semana en tareas rep.',   hours: 10 }
+    ]
   };
 
   /* ─────────────────────────────────────────────
-   * 1. CALCULATOR
-   * Gestiona sliders + checkboxes y recalcula en tiempo real
+   * 1. UTILS — declarado primero para que todos lo puedan usar
    * ───────────────────────────────────────────── */
-  const Calculator = {
-    // Valores actuales
-    state: {
-      manualHours: 10,
-      costPerHour: 15,
-      checkedOptions: [],
-    },
+  var Utils = {
+    throttle: function (fn, delay) {
+      var last = 0;
+      return function () {
+        var now = Date.now();
+        if (now - last >= delay) {
+          last = now;
+          fn.apply(this, arguments);
+        }
+      };
+    }
+  };
 
-    init() {
+  /* ─────────────────────────────────────────────
+   * 2. CALCULATOR
+   * ───────────────────────────────────────────── */
+  var Calculator = {
+    baseHours    : 10,
+    baseCost     : 15,
+    extraHours   : 0,   // acumulado por checkboxes
+    checkedIds   : [],
+
+    init: function () {
       if (!$('#hrs-range').length) return;
 
-      // Escucha sliders
-      $('#hrs-range').on('input', (e) => {
-        this.state.manualHours = +e.target.value;
-        this.render();
-        LeadCapture.update('sliderHours', this.state.manualHours);
+      var self = this;
+
+      // Sliders
+      $('#hrs-range').on('input', function () {
+        self.baseHours = +this.value;
+        self.render();
       });
 
-      $('#cost-range').on('input', (e) => {
-        this.state.costPerHour = +e.target.value;
-        this.render();
-        LeadCapture.update('sliderCost', this.state.costPerHour);
+      $('#cost-range').on('input', function () {
+        self.baseCost = +this.value;
+        self.render();
       });
 
-      // Escucha checkboxes del pain section
-      $(document).on('click', '.ck', (e) => {
-        const $ck  = $(e.currentTarget);
-        const idx  = $ck.closest('.pain-check').index();
-        const opt  = CONFIG.painOptions[idx];
+      // Checkboxes — usa data-index puesto desde init
+      $('.pain-checks .pain-check').each(function (i) {
+        $(this).find('.ck').attr('data-idx', i);
+      });
+
+      $(document).on('click', '.ck', function () {
+        var $ck  = $(this);
+        var idx  = parseInt($ck.attr('data-idx'), 10);
+        var opt  = CONFIG.painOptions[idx];
+        if (!opt) return;
+
         $ck.toggleClass('checked');
 
         if ($ck.hasClass('checked')) {
-          this.state.checkedOptions.push(idx);
-          // Suma horas y costo sugerido por la opción
-          this.state.manualHours = Math.min(
-            40,
-            this.state.manualHours + opt.hoursPerWeek
-          );
-          this.state.costPerHour = Math.round(
-            (this.state.costPerHour + opt.costPerHour) / 2
-          );
+          self.extraHours += opt.hours;
+          self.checkedIds.push(idx);
         } else {
-          this.state.checkedOptions = this.state.checkedOptions.filter(i => i !== idx);
-          // Resta al desmarcar
-          this.state.manualHours = Math.max(
-            2,
-            this.state.manualHours - opt.hoursPerWeek
-          );
+          self.extraHours = Math.max(0, self.extraHours - opt.hours);
+          self.checkedIds = self.checkedIds.filter(function (i) { return i !== idx; });
         }
 
-        // Sincroniza sliders con nuevos valores
-        $('#hrs-range').val(this.state.manualHours);
-        $('#cost-range').val(this.state.costPerHour);
+        // Actualiza el slider de horas para reflejar el total
+        var totalHours = Math.min(40, self.baseHours + self.extraHours);
+        $('#hrs-range').val(totalHours);
 
-        this.render();
-        LeadCapture.update('checkedOptions', this.state.checkedOptions);
+        self.render();
+        LeadCapture.update('checkedOptions', self.checkedIds);
       });
 
       this.render();
     },
 
-    render() {
-      const { manualHours, costPerHour } = this.state;
-      const monthly = Math.round(manualHours * costPerHour * CONFIG.weeksPerMonth);
+    render: function () {
+      var hours   = Math.min(40, this.baseHours + this.extraHours);
+      var cost    = this.baseCost;
+      var monthly = Math.round(hours * cost * CONFIG.weeksPerMonth);
 
-      $('#hrs-val').text(manualHours + ' hrs');
-      $('#cost-val').text('$' + costPerHour + ' USD');
+      $('#hrs-val').text(hours + ' hrs');
+      $('#cost-val').text('$' + cost + ' USD');
       $('#calc-out').text('$' + monthly.toLocaleString('es-CL') + ' USD/mes');
 
-      // Animación de pulso cuando el valor sube
+      // Pulso visual
       $('#calc-out').addClass('calc-pulse');
-      setTimeout(() => $('#calc-out').removeClass('calc-pulse'), 400);
+      setTimeout(function () { $('#calc-out').removeClass('calc-pulse'); }, 400);
     },
 
-    getResult() {
-      const { manualHours, costPerHour, checkedOptions } = this.state;
+    getResult: function () {
+      var hours = Math.min(40, this.baseHours + this.extraHours);
       return {
-        manualHours,
-        costPerHour,
-        monthlyLoss: Math.round(manualHours * costPerHour * CONFIG.weeksPerMonth),
-        checkedLabels: checkedOptions.map(i => CONFIG.painOptions[i]?.label),
+        hours    : hours,
+        cost     : this.baseCost,
+        monthly  : Math.round(hours * this.baseCost * CONFIG.weeksPerMonth),
+        checked  : this.checkedIds.map(function (i) { return CONFIG.painOptions[i] ? CONFIG.painOptions[i].label : ''; })
       };
-    },
+    }
   };
 
   /* ─────────────────────────────────────────────
-   * 2. LEAD CAPTURE
-   * Guarda datos del visitante en sessionStorage para análisis
-   * Se puede reemplazar sessionStorage por un POST a tu backend
+   * 3. FLOAT CTA
    * ───────────────────────────────────────────── */
-  const LeadCapture = {
-    data: {},
-
-    init() {
-      // Recupera sesión previa si existe
-      try {
-        const saved = sessionStorage.getItem(CONFIG.storageKey);
-        if (saved) this.data = JSON.parse(saved);
-      } catch (_) {}
-
-      this.update('landingVisit', new Date().toISOString());
-      this.update('referrer', document.referrer || 'directo');
-      this.trackCTAClicks();
-    },
-
-    update(key, value) {
-      this.data[key] = value;
-      this.save();
-    },
-
-    save() {
-      try {
-        sessionStorage.setItem(CONFIG.storageKey, JSON.stringify(this.data));
-      } catch (_) {}
-    },
-
-    trackCTAClicks() {
-      // Registra qué CTA clickeó el visitante
-      $(document).on('click', 'a[href*="calendly"], a[href*="wa.me"], a[href*="mailto"]', (e) => {
-        const href   = $(e.currentTarget).attr('href') || '';
-        const type   = href.includes('calendly') ? 'calendly'
-                     : href.includes('wa.me')    ? 'whatsapp'
-                     : 'email';
-        const label  = $(e.currentTarget).text().trim();
-        const clicks = this.data.ctaClicks || [];
-        clicks.push({ type, label, time: new Date().toISOString() });
-        this.update('ctaClicks', clicks);
-        // Adjunta resultado de calculadora al hacer click en CTA
-        this.update('calcResult', Calculator.getResult());
-      });
-    },
-
-    /**
-     * Exporta los datos capturados listos para enviar a un webhook / CRM.
-     * Uso: LeadCapture.export() desde consola o desde un botón de admin.
-     */
-    export() {
-      return JSON.parse(JSON.stringify(this.data));
-    },
-  };
-
-  /* ─────────────────────────────────────────────
-   * 3. ANIMATIONS
-   * Intersection Observer — entradas al scroll con clase CSS
-   * ───────────────────────────────────────────── */
-  const Animations = {
-    init() {
-      if (!('IntersectionObserver' in window)) {
-        // Fallback: muestra todo si no hay soporte
-        $('[data-animate]').addClass(CONFIG.animationClass);
-        return;
-      }
-
-      // Marca elementos animables en el DOM
-      const targets = [
-        '.service-row',
-        '.process-cell',
-        '.number-cell',
-        '.pain-check',
-        '.price-card',
-        '.pricing-table tr',
-      ].join(', ');
-
-      $(targets).attr('data-animate', '');
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              $(entry.target).addClass(CONFIG.animationClass);
-              observer.unobserve(entry.target); // solo una vez
-            }
-          });
-        },
-        { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
-      );
-
-      $('[data-animate]').each((_, el) => observer.observe(el));
-    },
-  };
-
-  /* ─────────────────────────────────────────────
-   * 4. FLOAT CTA
-   * Aparece después de hacer scroll y se oculta cerca del footer
-   * ───────────────────────────────────────────── */
-  const FloatCTA = {
-    init() {
-      const $btn    = $('.float-cta');
+  var FloatCTA = {
+    init: function () {
+      var $btn = $('.float-cta');
       if (!$btn.length) return;
 
-      $btn.css('opacity', '0').css('pointer-events', 'none');
+      // Estado inicial: oculto
+      $btn.css({ opacity: '0', 'pointer-events': 'none', transition: 'opacity 0.3s ease' });
 
-      $(window).on('scroll.floatcta', Utils.throttle(() => {
-        const scrolled   = $(window).scrollTop();
-        const docHeight  = $(document).height();
-        const winHeight  = $(window).height();
-        const nearBottom = scrolled + winHeight > docHeight - 200;
+      $(window).on('scroll', Utils.throttle(function () {
+        var scrolled    = $(window).scrollTop();
+        var docHeight   = $(document).height();
+        var winHeight   = $(window).height();
+        var nearBottom  = (scrolled + winHeight) > (docHeight - 200);
 
-        if (scrolled > 400 && !nearBottom) {
+        if (scrolled > 350 && !nearBottom) {
           $btn.css({ opacity: '1', 'pointer-events': 'auto' });
         } else {
           $btn.css({ opacity: '0', 'pointer-events': 'none' });
         }
-      }, 100));
-    },
+      }, 80));
+    }
   };
 
   /* ─────────────────────────────────────────────
-   * 5. NAV SCROLL
-   * Resalta el link activo según la sección visible
+   * 4. LEAD CAPTURE
    * ───────────────────────────────────────────── */
-  const NavScroll = {
-    sections: [],
+  var LeadCapture = {
+    data: {},
 
-    init() {
-      this.sections = $('section[id], div[id]')
-        .filter((_, el) => $(el).attr('id'))
-        .toArray();
+    init: function () {
+      try {
+        var saved = sessionStorage.getItem(CONFIG.storageKey);
+        if (saved) this.data = JSON.parse(saved);
+      } catch (e) {}
 
-      $(window).on('scroll.nav', Utils.throttle(() => this.update(), 120));
+      this.update('visit', new Date().toISOString());
+      this.update('referrer', document.referrer || 'directo');
+      this.trackCTAs();
     },
 
-    update() {
-      const scrollTop = $(window).scrollTop() + 80;
-      let current = '';
+    update: function (key, value) {
+      this.data[key] = value;
+      try {
+        sessionStorage.setItem(CONFIG.storageKey, JSON.stringify(this.data));
+      } catch (e) {}
+    },
 
-      this.sections.forEach((el) => {
-        if ($(el).offset().top <= scrollTop) {
-          current = $(el).attr('id');
-        }
+    trackCTAs: function () {
+      var self = this;
+      $(document).on('click', 'a[href*="calendly"], a[href*="wa.me"], a[href*="mailto"]', function () {
+        var href  = $(this).attr('href') || '';
+        var type  = href.indexOf('calendly') > -1 ? 'calendly'
+                  : href.indexOf('wa.me')    > -1 ? 'whatsapp'
+                  : 'email';
+        var clicks = self.data.ctaClicks || [];
+        clicks.push({ type: type, label: $(this).text().trim(), time: new Date().toISOString() });
+        self.update('ctaClicks', clicks);
+        self.update('calcResult', Calculator.getResult());
       });
-
-      $('.nav-links a').each((_, a) => {
-        const href = $(a).attr('href')?.replace('#', '');
-        $(a).toggleClass('nav-active', href === current);
-      });
     },
+
+    // Llama window.bld.leads() desde consola para ver los datos
+    export: function () {
+      return JSON.parse(JSON.stringify(this.data));
+    }
   };
 
   /* ─────────────────────────────────────────────
-   * 6. UTILS
-   * Helpers reutilizables
+   * INIT
    * ───────────────────────────────────────────── */
-  const Utils = {
-    throttle(fn, delay) {
-      let last = 0;
-      return function (...args) {
-        const now = Date.now();
-        if (now - last >= delay) {
-          last = now;
-          fn.apply(this, args);
-        }
-      };
-    },
-
-    formatCLP(value) {
-      return '$' + Math.round(value).toLocaleString('es-CL');
-    },
-  };
-
-  /* ─────────────────────────────────────────────
-   * INIT — arranca todo cuando el DOM está listo
-   * ───────────────────────────────────────────── */
-  $(document).ready(() => {
+  $(document).ready(function () {
     LeadCapture.init();
     Calculator.init();
-    Animations.init();
     FloatCTA.init();
-    NavScroll.init();
 
-    // Expone LeadCapture globalmente para debugging / integración futura
-    window.bld = { LeadCapture, Calculator };
+    // Debug: window.bld.leads() en consola
+    window.bld = {
+      leads : function () { return LeadCapture.export(); },
+      calc  : function () { return Calculator.getResult(); }
+    };
   });
 
 })(jQuery);
