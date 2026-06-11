@@ -481,23 +481,23 @@
         <p class="pain-sub">Marca las situaciones que vives en tu negocio hoy:</p>
         <div class="pain-checks">
           <div class="pain-check">
-            <div class="ck" onclick="toggleCheck(this)"></div>
+            <div class="ck"></div>
             <span>Copiamos datos manualmente entre apps (CRM, sheets, WhatsApp)</span>
           </div>
           <div class="pain-check">
-            <div class="ck" onclick="toggleCheck(this)"></div>
+            <div class="ck"></div>
             <span>Respondemos las mismas preguntas de clientes todos los días</span>
           </div>
           <div class="pain-check">
-            <div class="ck" onclick="toggleCheck(this)"></div>
+            <div class="ck"></div>
             <span>Los leads se pierden porque no alcanzamos a responder a tiempo</span>
           </div>
           <div class="pain-check">
-            <div class="ck" onclick="toggleCheck(this)"></div>
+            <div class="ck"></div>
             <span>Hacemos seguimiento manual por WhatsApp sin un sistema claro</span>
           </div>
           <div class="pain-check">
-            <div class="ck" onclick="toggleCheck(this)"></div>
+            <div class="ck"></div>
             <span>El equipo gasta más de 10 horas/semana en tareas repetitivas</span>
           </div>
         </div>
@@ -507,11 +507,11 @@
         <h4>Calculadora de tiempo perdido</h4>
         <div class="calc-row">
           <label>Horas perdidas por semana <span id="hrs-val">10 hrs</span></label>
-          <input type="range" min="2" max="40" value="10" step="1" oninput="calcUpdate()" id="hrs-range"/>
+          <input type="range" min="2" max="40" value="10" step="1" id="hrs-range"/>
         </div>
         <div class="calc-row">
           <label>Costo hora de tu equipo <span id="cost-val">$15 USD</span></label>
-          <input type="range" min="5" max="80" value="15" step="5" oninput="calcUpdate()" id="cost-range"/>
+          <input type="range" min="5" max="80" value="15" step="5" id="cost-range"/>
         </div>
         <div class="calc-result">
           <div class="calc-result-label">Pierdes aproximadamente</div>
