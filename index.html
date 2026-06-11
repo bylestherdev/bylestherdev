@@ -681,9 +681,74 @@
     <a href="mailto:jordi.lf.cb@gmail.com">Email</a>
   </div>
 </footer>
+<script>
+// ── CALCULADORA ──────────────────────────────────────────────
+var horasExtra = 0;
+var horasBase  = 10;
+var costoBase  = 15;
 
+var opcionHoras = [5, 4, 3, 4, 10];
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="main.js"></script>
+function recalcular() {
+  var totalHoras = Math.min(40, horasBase + horasExtra);
+  var mensual    = Math.round(totalHoras * costoBase * 4.3);
+
+  document.getElementById('hrs-val').textContent  = totalHoras + ' hrs';
+  document.getElementById('cost-val').textContent = '$' + costoBase + ' USD';
+  document.getElementById('calc-out').textContent = '$' + mensual.toLocaleString('es-CL') + ' USD/mes';
+
+  // Sincroniza slider visualmente
+  document.getElementById('hrs-range').value = totalHoras;
+}
+
+// Slider horas
+document.getElementById('hrs-range').addEventListener('input', function() {
+  horasBase = parseInt(this.value, 10);
+  recalcular();
+});
+
+// Slider costo
+document.getElementById('cost-range').addEventListener('input', function() {
+  costoBase = parseInt(this.value, 10);
+  recalcular();
+});
+
+// Checkboxes
+var checks = document.querySelectorAll('.pain-check .ck');
+checks.forEach(function(ck, i) {
+  ck.addEventListener('click', function() {
+    var activo = ck.classList.contains('checked');
+    if (activo) {
+      ck.classList.remove('checked');
+      horasExtra = Math.max(0, horasExtra - opcionHoras[i]);
+    } else {
+      ck.classList.add('checked');
+      horasExtra += opcionHoras[i];
+    }
+    recalcular();
+  });
+});
+
+// ── FLOAT CTA ─────────────────────────────────────────────────
+var floatBtn = document.querySelector('.float-cta');
+floatBtn.style.opacity        = '0';
+floatBtn.style.pointerEvents  = 'none';
+floatBtn.style.transition     = 'opacity 0.35s ease';
+
+window.addEventListener('scroll', function() {
+  var scrolled    = window.scrollY;
+  var docHeight   = document.documentElement.scrollHeight;
+  var winHeight   = window.innerHeight;
+  var nearBottom  = (scrolled + winHeight) > (docHeight - 200);
+
+  if (scrolled > 350 && !nearBottom) {
+    floatBtn.style.opacity       = '1';
+    floatBtn.style.pointerEvents = 'auto';
+  } else {
+    floatBtn.style.opacity       = '0';
+    floatBtn.style.pointerEvents = 'none';
+  }
+});
+</script>
 </body>
 </html>
